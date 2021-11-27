@@ -5,9 +5,14 @@ public class ArrayTaskList {
     private Task[] list = new Task[10];
 
     public void add(Task task) {
-        checkSize(size);
-        list[size] = task;
-        size++;
+        if(task != null) {
+            checkSize(size);
+            list[size] = task;
+            size++;
+        } else {
+          throw new NullPointerException("Task must not be null");
+        }
+
     }
 
     private void checkSize(int futureSize) {
@@ -44,6 +49,9 @@ public class ArrayTaskList {
     }
 
     public Task getTask(int index) {
+        if(index > list.length){
+            throw new IndexOutOfBoundsException("Index must be less or equal to elements amount");
+        }
         return list[index];
     }
 
@@ -51,7 +59,7 @@ public class ArrayTaskList {
         ArrayTaskList incoming = new ArrayTaskList();
         for(Task el : list) {
             if(el != null ){
-                if(el.isActive() && el.isRepeated()) {
+                if(el.nextTimeAfter(from) != -1) {
                     if (el.getStartTime() >= from && el.getEndTime() <= to) {
                         incoming.add(el);
                     }
