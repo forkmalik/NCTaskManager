@@ -1,9 +1,11 @@
 package ua.edu.sumdu.j2se.savchenko.tasks;
 
-public class ArrayTaskList {
-    private int size;
+public class ArrayTaskList extends AbstractTaskList {
     private Task[] list = new Task[10];
 
+    public ArrayTaskList(){}
+
+    @Override
     public void add(Task task) {
         if(task != null) {
             checkSize(size);
@@ -27,6 +29,7 @@ public class ArrayTaskList {
         list = listCopy;
     }
 
+    @Override
     public boolean remove(Task task) {
         if (task != null) {
             for(int index = 0; index < size; index++) {
@@ -44,28 +47,11 @@ public class ArrayTaskList {
         return false;
     }
 
-    public int size() {
-        return size;
-    }
-
+    @Override
     public Task getTask(int index) {
         if(index > list.length){
             throw new IndexOutOfBoundsException("Index must be less or equal to elements amount");
         }
         return list[index];
-    }
-
-    public ArrayTaskList incoming(int from, int to) {
-        ArrayTaskList incoming = new ArrayTaskList();
-        for(Task el : list) {
-            if(el != null ){
-                if(el.nextTimeAfter(from) != -1) {
-                    if (el.getStartTime() >= from && el.getEndTime() <= to) {
-                        incoming.add(el);
-                    }
-                }
-            }
-        }
-        return incoming;
     }
 }

@@ -1,8 +1,8 @@
 package ua.edu.sumdu.j2se.savchenko.tasks;
 
 
-public class LinkedTaskList {
-    static class Node {
+public class LinkedTaskList extends AbstractTaskList {
+    private class Node {
         private Task task;
         private Node next;
 
@@ -14,8 +14,10 @@ public class LinkedTaskList {
     }
 
     private Node head;
-    private int size;
 
+    public LinkedTaskList(){}
+
+    @Override
     public void add(Task task) {
         if(task != null) {
             Node newNode = new Node(task);
@@ -35,6 +37,7 @@ public class LinkedTaskList {
 
     }
 
+    @Override
     public boolean remove(Task task) {
         if (task != null) {
             if(head.task.equals(task)) {
@@ -55,10 +58,8 @@ public class LinkedTaskList {
         return false;
     }
 
-    public int size() {
-        return size;
-    }
 
+    @Override
     public Task getTask(int index) {
         if(index > size){
             throw new IndexOutOfBoundsException("Index must be less or equal to elements amount");
@@ -72,19 +73,5 @@ public class LinkedTaskList {
           }
           return node.task;
         }
-    }
-
-    public LinkedTaskList incoming(int from, int to) {
-        LinkedTaskList incoming = new LinkedTaskList();
-        Node node = head;
-        while (node.next != null){
-            if(node.task.nextTimeAfter(from) != -1) {
-                if (node.task.getStartTime() >= from && node.task.getEndTime() <= to) {
-                        incoming.add(node.task);
-                }
-            }
-            node = node.next;
-        }
-        return incoming;
     }
 }
