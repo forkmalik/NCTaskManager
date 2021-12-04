@@ -54,19 +54,4 @@ public class ArrayTaskList extends AbstractTaskList {
         }
         return list[index];
     }
-
-    @Override
-    public ArrayTaskList incoming(int from, int to) {
-        ArrayTaskList incoming = new ArrayTaskList();
-        for(Task el : list) {
-            if(el != null ){
-                if(el.nextTimeAfter(from) != -1) {
-                    if (el.getStartTime() >= from && el.getEndTime() <= to) {
-                        incoming.add(el);
-                    }
-                }
-            }
-        }
-        return incoming;
-    }
 }

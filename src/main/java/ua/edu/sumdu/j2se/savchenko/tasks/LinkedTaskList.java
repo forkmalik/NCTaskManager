@@ -74,19 +74,4 @@ public class LinkedTaskList extends AbstractTaskList {
           return node.task;
         }
     }
-
-    @Override
-    public LinkedTaskList incoming(int from, int to) {
-        LinkedTaskList incoming = new LinkedTaskList();
-        Node node = head;
-        while (node.next != null){
-            if(node.task.nextTimeAfter(from) != -1) {
-                if (node.task.getStartTime() >= from && node.task.getEndTime() <= to) {
-                        incoming.add(node.task);
-                }
-            }
-            node = node.next;
-        }
-        return incoming;
-    }
 }
