@@ -1,6 +1,8 @@
 package ua.edu.sumdu.j2se.savchenko.tasks;
 
-public abstract class AbstractTaskList {
+import java.util.Iterator;
+
+public abstract class AbstractTaskList implements Iterable<Task>, Cloneable {
     protected int size;
 
     public abstract void add(Task task);
@@ -18,9 +20,7 @@ public abstract class AbstractTaskList {
         AbstractTaskList incoming = null;
         try {
             incoming = this.getClass().newInstance();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
         while (index != size()) {
@@ -28,13 +28,35 @@ public abstract class AbstractTaskList {
             if(task != null) {
                 if(task.nextTimeAfter(from) != -1) {
                     if (task.getStartTime() >= from && task.getEndTime() <= to) {
-                        incoming.add(task);
+                        if (incoming != null) {
+                            incoming.add(task);
+                        }
                     }
                 }
             }
             index++;
         }
         return incoming;
+    }
+
+    @Override
+    public abstract Iterator<Task> iterator();
+
+    @Override
+    public AbstractTaskList clone() throws CloneNotSupportedException {
+        AbstractTaskList cloneList = null;
+        try {
+            cloneList = this.getClass().newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        for (Task task : this) {
+            Task cloneTask = task.clone();
+            if (cloneList != null) {
+                cloneList.add(cloneTask);
+            }
+        }
+        return  cloneList;
     }
 
 }
