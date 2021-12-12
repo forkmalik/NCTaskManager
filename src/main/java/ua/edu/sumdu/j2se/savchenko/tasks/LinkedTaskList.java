@@ -1,5 +1,9 @@
 package ua.edu.sumdu.j2se.savchenko.tasks;
 
+import java.util.Arrays;
+import java.util.ConcurrentModificationException;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class LinkedTaskList extends AbstractTaskList {
     private class Node {
@@ -74,4 +78,85 @@ public class LinkedTaskList extends AbstractTaskList {
           return node.task;
         }
     }
+
+    @Override
+    public Iterator<Task> iterator() {
+        return new Iterator<Task>() {
+
+            private int index = 0;
+            private int previousLoc = -1;
+            private Node node = head;
+
+            @Override
+            public boolean hasNext() {
+                return node != null;
+            }
+
+            @Override
+            public Task next() {
+                try {
+                    int i = index;
+                    Task next = getTask(i);
+                    node = node.next;
+                    previousLoc = i;
+                    index = i + 1;
+                    return next;
+                } catch (IndexOutOfBoundsException e) {
+                    throw new NoSuchElementException();
+                }
+            }
+
+            @Override
+            public void remove() {
+                if(previousLoc < 0) {
+                    throw new IllegalStateException("Can't remove!");
+                }
+
+                try {
+                    LinkedTaskList.this.remove(getTask(previousLoc));
+                    if (previousLoc < index)
+                        index--;
+                    previousLoc = -1;
+                } catch (IndexOutOfBoundsException e) {
+                    throw new ConcurrentModificationException();
+                }
+            }
+
+        };
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        LinkedTaskList list = (LinkedTaskList) o;
+        Iterator<Task> itr = this.iterator();
+        Iterator<Task> itr2 = list.iterator();
+        while (itr.hasNext()) {
+            while (itr2.hasNext()) {
+                boolean isEqual = itr.next().equals(itr2.next());
+                if(!isEqual) return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        Iterator<Task> itr = this.iterator();
+        int result = 0;
+        while (itr.hasNext()) {
+            result = 31 * itr.next().hashCode();
+        }
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "LinkedTaskList{" +
+                "head=" + head +
+                '}';
+    }
+
 }

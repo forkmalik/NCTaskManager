@@ -1,5 +1,10 @@
 package ua.edu.sumdu.j2se.savchenko.tasks;
 
+import java.util.Arrays;
+import java.util.ConcurrentModificationException;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 public class ArrayTaskList extends AbstractTaskList {
     private Task[] list = new Task[10];
 
@@ -54,4 +59,70 @@ public class ArrayTaskList extends AbstractTaskList {
         }
         return list[index];
     }
+
+    @Override
+    public Iterator<Task> iterator() {
+        return new Iterator<Task>() {
+
+            private int index = 0;
+            private  int previousLoc = -1;
+
+            @Override
+            public boolean hasNext() {
+                return index < size() && list[index] != null;
+            }
+
+            @Override
+            public Task next() {
+                try {
+                    int i = index;
+                    Task next = getTask(i);
+                    previousLoc = i;
+                    index = i + 1;
+                    return next;
+                } catch (IndexOutOfBoundsException e) {
+                    throw new NoSuchElementException();
+                }
+            }
+
+            @Override
+            public void remove() {
+                if(previousLoc < 0) {
+                    throw new IllegalStateException("Can't remove!");
+                }
+
+                try {
+                    ArrayTaskList.this.remove(list[previousLoc]);
+                    if (previousLoc < index)
+                        index--;
+                    previousLoc = -1;
+                } catch (IndexOutOfBoundsException e) {
+                    throw new ConcurrentModificationException();
+                }
+            }
+        };
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ArrayTaskList list1 = (ArrayTaskList) o;
+
+        return Arrays.equals(list, list1.list);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(list);
+    }
+
+    @Override
+    public String toString() {
+        return "ArrayTaskList{" +
+                "list=" + Arrays.toString(list) +
+                '}';
+    }
+
 }
