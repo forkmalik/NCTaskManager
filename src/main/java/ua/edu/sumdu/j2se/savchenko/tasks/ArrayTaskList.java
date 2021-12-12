@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.stream.Stream;
 
 public class ArrayTaskList extends AbstractTaskList {
     private Task[] list = new Task[10];
@@ -123,6 +124,12 @@ public class ArrayTaskList extends AbstractTaskList {
         return "ArrayTaskList{" +
                 "list=" + Arrays.toString(list) +
                 '}';
+    }
+
+    @Override
+    public Stream<Task> getStream() {
+
+        return Arrays.stream(this.list);
     }
 
 }

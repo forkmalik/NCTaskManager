@@ -4,8 +4,10 @@ import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.stream.Stream;
 
 public class LinkedTaskList extends AbstractTaskList {
+
     private class Node {
         private Task task;
         private Node next;
@@ -157,6 +159,19 @@ public class LinkedTaskList extends AbstractTaskList {
         return "LinkedTaskList{" +
                 "head=" + head +
                 '}';
+    }
+
+    @Override
+    public Stream<Task> getStream(){
+        Task[] arr = new Task[size()];
+        Iterator<Task> itr = this.iterator();
+
+        while (itr.hasNext()) {
+            for (int i = 0; i < size(); i++) {
+                arr[i] = itr.next();
+            }
+        }
+        return Arrays.stream(arr);
     }
 
 }
