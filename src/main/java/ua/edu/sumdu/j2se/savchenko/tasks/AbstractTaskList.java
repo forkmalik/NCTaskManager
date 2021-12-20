@@ -1,6 +1,7 @@
 package ua.edu.sumdu.j2se.savchenko.tasks;
 
 
+import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -16,23 +17,6 @@ public abstract class AbstractTaskList implements Iterable<Task>, Cloneable{
 
     public int size() {
         return size;
-    }
-
-    public final AbstractTaskList incoming(int from, int to) {
-        AbstractTaskList incoming = null;
-        try {
-            incoming = this.getClass().newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-
-
-       this.getStream()
-               .filter(Objects::nonNull)
-                .filter(task -> task.getStartTime() >= from && task.getEndTime() <= to && task.nextTimeAfter(from) != -1)
-                .forEach(incoming::add);
-
-        return incoming;
     }
 
     @Override
