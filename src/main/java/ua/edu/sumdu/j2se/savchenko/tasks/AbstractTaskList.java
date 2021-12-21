@@ -1,8 +1,11 @@
 package ua.edu.sumdu.j2se.savchenko.tasks;
 
-import java.util.Iterator;
 
-public abstract class AbstractTaskList implements Iterable<Task>, Cloneable {
+import java.util.Iterator;
+import java.util.Objects;
+import java.util.stream.Stream;
+
+public abstract class AbstractTaskList implements Iterable<Task>, Cloneable{
     protected int size;
 
     public abstract void add(Task task);
@@ -15,27 +18,20 @@ public abstract class AbstractTaskList implements Iterable<Task>, Cloneable {
         return size;
     }
 
-    public AbstractTaskList incoming(int from, int to) {
-        int index = 0;
+    public final AbstractTaskList incoming(int from, int to) {
         AbstractTaskList incoming = null;
         try {
             incoming = this.getClass().newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
-        while (index != size()) {
-            Task task = getTask(index);
-            if(task != null) {
-                if(task.nextTimeAfter(from) != -1) {
-                    if (task.getStartTime() >= from && task.getEndTime() <= to) {
-                        if (incoming != null) {
-                            incoming.add(task);
-                        }
-                    }
-                }
-            }
-            index++;
-        }
+
+
+       this.getStream()
+               .filter(Objects::nonNull)
+                .filter(task -> task.getStartTime() >= from && task.getEndTime() <= to && task.nextTimeAfter(from) != -1)
+                .forEach(incoming::add);
+
         return incoming;
     }
 
@@ -58,5 +54,7 @@ public abstract class AbstractTaskList implements Iterable<Task>, Cloneable {
         }
         return  cloneList;
     }
+
+    public abstract Stream<Task> getStream();
 
 }
