@@ -1,24 +1,34 @@
 package ua.edu.sumdu.j2se.savchenko.tasks;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
+
 public class Task implements Cloneable {
     private String title;
-    private int time;
-    private int start;
-    private int end;
+    private LocalDateTime time;
+    private LocalDateTime start;
+    private LocalDateTime end;
     private int interval;
     private boolean active;
 
-    public Task(String title, int time) {
-        if(time >= 0){
+    public Task(String title, LocalDateTime time) {
+        boolean isTimeLarger;
+
+        try {
+            isTimeLarger = getSecondsDuration(time) >= 0;
+        } catch (Throwable t) {
+            throw new IllegalArgumentException("Wrong time");
+        }
+
+        if(isTimeLarger){
             this.title = title;
             this.time = time;
-        } else {
-            throw new IllegalArgumentException("Wrong time");
         }
 
     }
 
-    public Task(String title, int start, int end, int interval) {
+    public Task(String title, LocalDateTime start, LocalDateTime end, int interval) {
         this.title = title;
         this.start = start;
         this.end = end;
@@ -33,22 +43,22 @@ public class Task implements Cloneable {
         this.title = title;
     }
 
-    public int getTime() {
+    public LocalDateTime getTime() {
         return (isRepeated() ? start : time);
     }
 
-    public void setTime(int time) {
+    public void setTime(LocalDateTime time) {
         if(isRepeated()) {
             this.interval = 0;
         }
         this.time = time;
     }
 
-    public int getStartTime() {
+    public LocalDateTime getStartTime() {
         return (isRepeated() ? start : time);
     }
 
-    public int getEndTime() {
+    public LocalDateTime getEndTime() {
         return (isRepeated() ? end : time);
     }
 
@@ -56,7 +66,7 @@ public class Task implements Cloneable {
         return interval;
     }
 
-    public void setTime(int start, int end, int interval) {
+    public void setTime(LocalDateTime start, LocalDateTime end, int interval) {
         this.start = start;
         this.end = end;
         if (!isRepeated()) {
@@ -77,26 +87,41 @@ public class Task implements Cloneable {
         return interval > 0;
     }
 
-    public int nextTimeAfter (int current) {
-        if(isActive() & !isRepeated()) {
-            return (current >= this.time) ? -1 : this.time;
+    public LocalDateTime nextTimeAfter (LocalDateTime current) {
+        if(isActive() && !isRepeated()) {
+            return (current.isAfter(this.time)) || current.isEqual(this.time) ? null : this.time;
         }
         if(isActive() & isRepeated()) {
-            if(current < this.start) {
+            if(current.isBefore(this.start)) {
                 return start;
             }
-            else if((this.end - current) < this.interval) {
-                return -1;
-            }
             else {
-                int time = this.start;
-                while (current >= time) {
-                    time += this.interval;
+                LocalDateTime time = this.start;
+                while (current.isAfter(time) || current.isEqual(time)) {
+                    time = time.plusSeconds(this.interval);
+                }
+                if(time.isAfter(this.end)) {
+                    return null;
                 }
                 return time;
             }
         }
-        return -1;
+        return null;
+    }
+
+    private long getSecondsDuration(LocalDateTime time) {
+        long hours;
+        long minutes;
+        long seconds;
+        try {
+            hours = time.getHour();
+            minutes = time.getMinute();
+            seconds = time.getSecond();
+        } catch (Throwable t) {
+            throw t;
+        }
+
+        return (hours * 3600) + (minutes * 60) + seconds;
     }
 
     @Override
@@ -117,9 +142,11 @@ public class Task implements Cloneable {
     @Override
     public int hashCode() {
         int result = title.hashCode();
-        result = 31 * result + time;
-        result = 31 * result + start;
-        result = 31 * result + end;
+        if (time != null) {
+            result = 31 * result + time.hashCode();
+        }
+        result = 31 * result + start.hashCode();
+        result = 31 * result + end.hashCode();
         result = 31 * result + interval;
         result = 31 * result + (active ? 1 : 0);
         return result;
