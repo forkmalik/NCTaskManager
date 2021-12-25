@@ -1,10 +1,10 @@
 package ua.edu.sumdu.j2se.savchenko.tasks;
 
-import java.time.Duration;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 
-public class Task implements Cloneable {
+public class Task implements Cloneable, Serializable {
     private String title;
     private LocalDateTime time;
     private LocalDateTime start;
@@ -35,6 +35,10 @@ public class Task implements Cloneable {
         this.interval = interval;
     }
 
+    public Task() {
+        super();
+    }
+
     public String getTitle() {
         return title;
     }
@@ -54,12 +58,24 @@ public class Task implements Cloneable {
         this.time = time;
     }
 
+    public void setStartTime(LocalDateTime start) {
+        this.start = start;
+    }
+
     public LocalDateTime getStartTime() {
         return (isRepeated() ? start : time);
     }
 
+    public void setEndTime(LocalDateTime end) {
+        this.end = end;
+    }
+
     public LocalDateTime getEndTime() {
         return (isRepeated() ? end : time);
+    }
+
+    public void setRepeatInterval(int interval) {
+        this.interval = interval;
     }
 
     public int getRepeatInterval() {
