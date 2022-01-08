@@ -1,6 +1,5 @@
 package ua.edu.sumdu.j2se.savchenko.tasks;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Stream;
@@ -31,7 +30,8 @@ public class Tasks {
         return incoming;
     }
 
-    public static SortedMap<LocalDateTime, Set<Task>> calendar (Iterable<Task> tasks, LocalDateTime from, LocalDateTime to) throws CloneNotSupportedException {
+    public static SortedMap<LocalDateTime, Set<Task>> calendar (Iterable<Task> tasks, LocalDateTime from, LocalDateTime to)
+            throws CloneNotSupportedException {
 
         if(tasks == null || from == null || to == null) {
             throw new IllegalArgumentException("Arguments is empty!");
