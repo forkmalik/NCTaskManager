@@ -1,13 +1,13 @@
-package ua.edu.sumdu.j2se.savchenko.tasks;
+package ua.edu.sumdu.j2se.savchenko.tasks.model;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import ua.edu.sumdu.j2se.savchenko.tasks.model.*;
 
 import java.io.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
-import java.util.Iterator;
 import java.util.Objects;
 
 public class TaskIO {
@@ -106,7 +106,7 @@ public class TaskIO {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        list.getStream().forEach(tasks::add);
+        list.getStream().filter(Objects::nonNull).forEach(tasks::add);
     }
 
     public static void writeText(AbstractTaskList tasks, File file) {

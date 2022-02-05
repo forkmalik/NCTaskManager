@@ -1,4 +1,6 @@
-package ua.edu.sumdu.j2se.savchenko.tasks;
+package ua.edu.sumdu.j2se.savchenko.tasks.model;
+
+import ua.edu.sumdu.j2se.savchenko.tasks.model.Task;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -20,7 +22,7 @@ public class Tasks {
     }
 
     public static Iterable<Task> incoming (Iterable<Task> tasks,LocalDateTime from, LocalDateTime to) {
-        ArrayList<Task> incoming = new ArrayList<>();
+        LinkedTaskList incoming = new LinkedTaskList();
 
         Stream<Task> stream = StreamSupport.stream(tasks.spliterator(), false);
 

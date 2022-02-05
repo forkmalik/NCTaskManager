@@ -1,10 +1,8 @@
-package ua.edu.sumdu.j2se.savchenko.tasks;
+package ua.edu.sumdu.j2se.savchenko.tasks.model;
 
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.Iterator;
-import java.util.Objects;
 import java.util.stream.Stream;
 
 public abstract class AbstractTaskList implements Iterable<Task>, Cloneable, Serializable {

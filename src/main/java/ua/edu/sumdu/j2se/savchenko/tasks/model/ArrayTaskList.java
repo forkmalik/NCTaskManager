@@ -1,4 +1,4 @@
-package ua.edu.sumdu.j2se.savchenko.tasks;
+package ua.edu.sumdu.j2se.savchenko.tasks.model;
 
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
@@ -12,7 +12,7 @@ public class ArrayTaskList extends AbstractTaskList {
     public ArrayTaskList(){}
 
     @Override
-    public void add(Task task) {
+     public void add(Task task) {
         if(task != null) {
             checkSize(size);
             list[size] = task;

@@ -1,4 +1,4 @@
-package ua.edu.sumdu.j2se.savchenko.tasks;
+package ua.edu.sumdu.j2se.savchenko.tasks.model;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -160,24 +160,28 @@ public class Task implements Cloneable, Serializable {
         int result = title.hashCode();
         if (time != null) {
             result = 31 * result + time.hashCode();
+        } else {
+            result = 31 * result + start.hashCode();
+            result = 31 * result + end.hashCode();
+            result = 31 * result + interval;
         }
-        result = 31 * result + start.hashCode();
-        result = 31 * result + end.hashCode();
-        result = 31 * result + interval;
         result = 31 * result + (active ? 1 : 0);
         return result;
     }
 
     @Override
     public String toString() {
-        return "Task{" +
-                "title='" + title + '\'' +
-                ", time=" + time +
-                ", start=" + start +
-                ", end=" + end +
-                ", interval=" + interval +
-                ", active=" + active +
-                '}';
+        if(isRepeated()) {
+            return "title: " + title + '\n'
+                    + "start time: " + start + '\n'
+                    + "end time: " + end + '\n'
+                    + "repeat interval: " + interval + '\n'
+                    + "active: " + active;
+        }
+        return "title: " + title + '\n' +
+                "time: " + time + "\n"
+                + ", active: " + active;
+
     }
 
     @Override
