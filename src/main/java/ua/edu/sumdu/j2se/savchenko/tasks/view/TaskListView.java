@@ -4,9 +4,7 @@ import ua.edu.sumdu.j2se.savchenko.tasks.controller.ActionListener;
 import ua.edu.sumdu.j2se.savchenko.tasks.model.AbstractTaskList;
 import ua.edu.sumdu.j2se.savchenko.tasks.model.Task;
 
-import java.io.Console;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.SortedMap;
@@ -34,7 +32,7 @@ public class TaskListView implements View {
     }
 
     public void setActive() {
-        System.out.println("Is this task active? (y/n)");
+        System.out.println(ConsoleColors.ANSI_PURPLE + "Is this task active? (y/n)" + ConsoleColors.ANSI_RESET);
         Scanner scanner = new Scanner(System.in);
         String active = scanner.nextLine();
 
@@ -45,42 +43,74 @@ public class TaskListView implements View {
     public void setTitle() {
         Scanner scanner = new Scanner(System.in);
         printMessage("Enter task title...");
+
+        if(scanner.nextLine().equals("")) {
+            printMessage("The task title should not be blank ");
+            setTitle();
+        }
+
         this.title = scanner.nextLine();
     }
 
     public void setTime() {
         Scanner scanner = new Scanner(System.in);
+
         LocalDateTimeParser parser = new LocalDateTimeParser();
-        printMessage("Enter task date...");
+
+        printMessage("Enter task date (dd.MM.yyyy)...");
         String dateString = scanner.nextLine();
-        printMessage("Enter task time...");
+
+        printMessage("Enter task time (HH:mm)...");
         String timeString = scanner.nextLine();
-        this.time = parser.parseString(dateString, timeString);
+        LocalDateTime timeToSet = parser.parseString(dateString, timeString);
+        if(timeToSet != null) {
+            this.time = parser.parseString(dateString, timeString);
+        } else {
+            setTime();
+        }
+
     }
 
     public void setStart() {
         Scanner scanner = new Scanner(System.in);
+
         LocalDateTimeParser parser = new LocalDateTimeParser();
+
         printMessage("Enter task start date...");
         String dateString = scanner.nextLine();
+
         printMessage("Enter task start time...");
         String timeString = scanner.nextLine();
-        this.start = parser.parseString(dateString, timeString);
+        LocalDateTime timeToSet = parser.parseString(dateString, timeString);
+        if(timeToSet != null) {
+            this.start = parser.parseString(dateString, timeString);
+        } else {
+            setStart();
+        }
     }
 
     public void setEnd() {
         Scanner scanner = new Scanner(System.in);
+
         LocalDateTimeParser parser = new LocalDateTimeParser();
+
         printMessage("Enter task end date...");
         String dateString = scanner.nextLine();
+
         printMessage("Enter task end time...");
         String timeString = scanner.nextLine();
-        this.end = parser.parseString(dateString, timeString);
+
+        LocalDateTime timeToSet = parser.parseString(dateString, timeString);
+        if(timeToSet != null) {
+            this.end = parser.parseString(dateString, timeString);
+        } else {
+            setEnd();
+        }
     }
 
     public void setInterval() {
         Scanner scanner = new Scanner(System.in);
-        printMessage("Enter repeat interval...");
+        printMessage("Enter repeat interval (seconds)...");
         this.interval = scanner.nextInt();
     }
 
@@ -154,14 +184,14 @@ public class TaskListView implements View {
         System.out.println(ConsoleColors.ANSI_PURPLE + message + ConsoleColors.ANSI_RESET);
     }
 
-    private void printTask(Task task) {
+    public void printTask(Task task) {
         System.out.println(ConsoleColors.ANSI_YELLOW + "--------------------------------------\n"
                 + task.getTitle() + "\n" + " time: " + task.getTime()
                 + " active: " + task.isActive() + "\n"
                 + "--------------------------------------\n" + ConsoleColors.ANSI_RESET);
     }
 
-    private void printRepeatableTask(Task task) {
+    public void printRepeatableTask(Task task) {
         System.out.println(ConsoleColors.ANSI_YELLOW + "--------------------------------------\n"
                 + task.getTitle() + "\n"
                 + " start time: " + task.getStartTime()
@@ -172,7 +202,7 @@ public class TaskListView implements View {
     }
 
     private boolean isRepeatable() {
-        System.out.println("Is this task repeatable? (y/n)");
+        System.out.println(ConsoleColors.ANSI_PURPLE + "Is this task repeatable? (y/n)" + ConsoleColors.ANSI_RESET);
         Scanner scanner = new Scanner(System.in);
         String answer = scanner.nextLine();
 
@@ -210,7 +240,19 @@ public class TaskListView implements View {
     }
 
     public void printCalendar(SortedMap<LocalDateTime, Set<Task>> calendar) {
-        System.out.println(calendar);
+        Set<LocalDateTime> keys = calendar.keySet();
+
+        for (LocalDateTime key: keys) {
+            System.out.println(ConsoleColors.ANSI_YELLOW + key + "\n" + ConsoleColors.ANSI_RESET);
+            Set<Task> tasks = calendar.get(key);
+            for (Task task: tasks) {
+                if (task.isRepeated()) {
+                    printRepeatableTask(task);
+                } else {
+                    printTask(task);
+                }
+            }
+        }
     }
 
 }

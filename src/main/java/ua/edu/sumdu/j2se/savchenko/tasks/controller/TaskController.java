@@ -1,34 +1,30 @@
 package ua.edu.sumdu.j2se.savchenko.tasks.controller;
 
+import org.apache.log4j.Logger;
 import ua.edu.sumdu.j2se.savchenko.tasks.model.LinkedTaskList;
 import ua.edu.sumdu.j2se.savchenko.tasks.model.Task;
 import ua.edu.sumdu.j2se.savchenko.tasks.model.TaskIO;
 import ua.edu.sumdu.j2se.savchenko.tasks.model.TaskModel;
-import ua.edu.sumdu.j2se.savchenko.tasks.view.CalendarView;
 import ua.edu.sumdu.j2se.savchenko.tasks.view.TaskListView;
 import ua.edu.sumdu.j2se.savchenko.tasks.view.TaskView;
 
 import java.io.File;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.Set;
 import java.util.SortedMap;
 
-public class TaskController {
+public class TaskController extends AbstractController{
     private TaskModel taskModel;
     private TaskListView listView;
-    private CalendarView calendarView;
     private TaskView taskView;
 
-    public TaskController(TaskModel taskModel, TaskListView listView, CalendarView calendarView, TaskView taskView) {
+    private static final Logger logger = Logger.getLogger(TaskController.class);
+
+    public TaskController(TaskModel taskModel, TaskListView listView, TaskView taskView) {
         this.taskModel = taskModel;
         this.listView = listView;
-        this.calendarView = calendarView;
         this.taskView = taskView;
-        readFile();
-        this.listView.setAction(new TaskActionListener());
-
     }
 
     private void addTask() {
@@ -61,8 +57,8 @@ public class TaskController {
     }
 
     private void removeTask() {
-        listView.setIndex();
-        int taskToDeleteIndex = listView.getIndex();
+        int taskToDeleteIndex = getTaskIndex();
+
         boolean deleted = taskModel.removeTask(taskToDeleteIndex);
         if (deleted) {
             listView.printMessage("Removed!");
@@ -72,12 +68,22 @@ public class TaskController {
         listView.setAction(new TaskActionListener());
     }
 
-    private void editTask() {
+    private int getTaskIndex() {
         listView.setIndex();
-        Task taskForEdit = taskModel.findTask(listView.getIndex());
+        if (listView.getIndex() > taskModel.getTaskList().size()) {
+            listView.printMessage("Index must be less or equal tasks amount");
+            getTaskIndex();
+        }
+        return listView.getIndex();
+    }
+
+    private void editTask() {
+        int taskIndex = getTaskIndex();
+
+        Task taskForEdit = taskModel.findTask(taskIndex);
         taskView.print(taskForEdit);
 
-        boolean save = selectAndSet();
+        boolean save = selectAndSetProperty();
         if (save) {
             saveChanges();
         }
@@ -101,28 +107,35 @@ public class TaskController {
 
     }
 
-    private boolean selectAndSet() {
+    private boolean selectAndSetProperty() {
         String selectedField = taskView.selectField();
         taskView.setNewValue(selectedField);
         boolean change = taskView.askQuestion("Change once more? (y/n)");
         if(change) {
-            selectAndSet();
+            selectAndSetProperty();
         } else {
-            boolean save = taskView.askQuestion("Save changes? (y/n)");
-            return save;
+            return taskView.askQuestion("Save changes? (y/n)");
         }
         return false;
     }
 
-    private void printCalendar() throws CloneNotSupportedException {
+    private void printCalendar() {
         LinkedTaskList taskList = taskModel.getTaskList();
 
         LocalDateTime from = listView.getStartOfPeriod();
         LocalDateTime to = listView.getEndOfPeriod();
 
-        SortedMap<LocalDateTime, Set<Task>> calendar = taskModel.getCalendar(taskList, from, to);
+        SortedMap<LocalDateTime, Set<Task>> calendar = null;
 
-        listView.printCalendar(calendar);
+        try {
+            calendar = taskModel.getCalendar(taskList, from, to);
+        } catch (CloneNotSupportedException e) {
+            logger.error(e.getMessage(), e);
+        }
+
+        if (calendar != null) {
+            listView.printCalendar(calendar);
+        }
 
         listView.clearAllFields();
         listView.setAction(new TaskActionListener());
@@ -171,9 +184,15 @@ public class TaskController {
         System.exit(0);
     }
 
+    @Override
+    public void startController() {
+        readFile();
+        this.listView.setAction(new TaskActionListener());
+    }
+
     public class TaskActionListener extends ActionListener {
         @Override
-        public void actionPerformed(String event) throws CloneNotSupportedException {
+        public void actionPerformed(String event) {
                 switch (event) {
                     case "print":
                         printList();

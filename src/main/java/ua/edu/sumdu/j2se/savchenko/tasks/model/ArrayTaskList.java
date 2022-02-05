@@ -1,5 +1,7 @@
 package ua.edu.sumdu.j2se.savchenko.tasks.model;
 
+import org.apache.log4j.Logger;
+
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
@@ -8,6 +10,8 @@ import java.util.stream.Stream;
 
 public class ArrayTaskList extends AbstractTaskList {
     private Task[] list = new Task[10];
+
+    private static final Logger logger = Logger.getLogger(ArrayTaskList.class);
 
     public ArrayTaskList(){}
 
@@ -18,7 +22,8 @@ public class ArrayTaskList extends AbstractTaskList {
             list[size] = task;
             size++;
         } else {
-          throw new NullPointerException("Task must not be null");
+            Exception e = new NullPointerException();
+            logger.error(e.getMessage(), e);
         }
 
     }

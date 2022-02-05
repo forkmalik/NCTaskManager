@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.SortedMap;
 
-public class TaskModel implements Model {
+public class TaskModel {
 
     private LinkedTaskList taskList = new LinkedTaskList();
 
