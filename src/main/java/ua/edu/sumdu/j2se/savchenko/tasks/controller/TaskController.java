@@ -14,7 +14,7 @@ import java.time.LocalTime;
 import java.util.Set;
 import java.util.SortedMap;
 
-public class TaskController extends AbstractController{
+public class TaskController extends AbstractController {
     private TaskModel taskModel;
     private TaskListView listView;
     private TaskView taskView;
@@ -25,6 +25,7 @@ public class TaskController extends AbstractController{
         this.taskModel = taskModel;
         this.listView = listView;
         this.taskView = taskView;
+        this.taskModel.createFile();
     }
 
     private void addTask() {
@@ -111,7 +112,7 @@ public class TaskController extends AbstractController{
         String selectedField = taskView.selectField();
         taskView.setNewValue(selectedField);
         boolean change = taskView.askQuestion("Change once more? (y/n)");
-        if(change) {
+        if (change) {
             selectAndSetProperty();
         } else {
             return taskView.askQuestion("Save changes? (y/n)");
@@ -158,7 +159,7 @@ public class TaskController extends AbstractController{
 
     private void writeTaskList() {
         File fileToWrite = new File("taskList.json");
-        if(!fileToWrite.exists()) {
+        if (!fileToWrite.exists()) {
             fileToWrite = taskModel.createFile();
         }
         TaskIO.writeText(taskModel.getTaskList(), fileToWrite);
@@ -166,16 +167,14 @@ public class TaskController extends AbstractController{
 
     private void readFile() {
         File fileToRead = new File("taskList.json");
-        if(!fileToRead.exists()) {
-            listView.printMessage("File not found. Please create and write a new task list");
+        if (!fileToRead.exists()) {
+            taskModel.createFile();
+        }
+
+        if(fileToRead.length() == 0) {
+            listView.printMessage("Your task list is empty now. Add new tasks...");
         } else {
             TaskIO.readText(taskModel.getTaskList(), fileToRead);
-            if(taskModel.getTaskList().size() == 0) {
-                listView.printMessage("File is empty");
-            } else {
-                listView.printMessage("File read");
-            }
-
         }
     }
 
@@ -193,28 +192,28 @@ public class TaskController extends AbstractController{
     public class TaskActionListener extends ActionListener {
         @Override
         public void actionPerformed(String event) {
-                switch (event) {
-                    case "print":
-                        printList();
-                        break;
-                    case "add":
-                        addTask();
-                        break;
-                    case "remove":
-                        removeTask();
-                        break;
-                    case "edit":
-                        editTask();
-                    case "calendar":
-                        printCalendar();
-                    case "current":
-                        printCurrent();
-                    case "exit":
-                        finishWork();
-                    default:
-                        readFile();
-                        listView.setAction(new TaskActionListener());
-                }
+            switch (event) {
+                case "print":
+                    printList();
+                    break;
+                case "add":
+                    addTask();
+                    break;
+                case "remove":
+                    removeTask();
+                    break;
+                case "edit":
+                    editTask();
+                case "calendar":
+                    printCalendar();
+                case "current":
+                    printCurrent();
+                case "exit":
+                    finishWork();
+                default:
+                    readFile();
+                    listView.setAction(new TaskActionListener());
+            }
         }
     }
 }
