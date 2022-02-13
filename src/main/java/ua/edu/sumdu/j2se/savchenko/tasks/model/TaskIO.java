@@ -2,6 +2,7 @@ package ua.edu.sumdu.j2se.savchenko.tasks.model;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.apache.log4j.Logger;
 import ua.edu.sumdu.j2se.savchenko.tasks.model.*;
 
 import java.io.*;
@@ -11,6 +12,8 @@ import java.time.ZoneOffset;
 import java.util.Objects;
 
 public class TaskIO {
+    private static final Logger logger = Logger.getLogger(TaskIO.class);
+
 
     public static void write(AbstractTaskList tasks, OutputStream out) {
         try (DataOutputStream outStream = new DataOutputStream(out)) {
@@ -31,7 +34,7 @@ public class TaskIO {
             }
             outStream.flush();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -57,7 +60,7 @@ public class TaskIO {
                 tasks.add(task);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -66,7 +69,7 @@ public class TaskIO {
         try (FileOutputStream writer = new FileOutputStream(file)) {
             write(tasks, writer);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
 
     }
@@ -76,7 +79,7 @@ public class TaskIO {
         try (FileInputStream reader = new FileInputStream(file)) {
             read(tasks, reader);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
 
     }
@@ -91,7 +94,7 @@ public class TaskIO {
             jsonBuilder.toJson(list, bufferedWriter);
             bufferedWriter.flush();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
 
     }
@@ -104,7 +107,7 @@ public class TaskIO {
         try (BufferedReader bufferedReader = new BufferedReader(in)) {
             list = jsonBuilder.fromJson(bufferedReader, ArrayTaskList.class);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
         list.getStream().filter(Objects::nonNull).forEach(tasks::add);
     }
@@ -114,17 +117,16 @@ public class TaskIO {
         try (FileWriter writer = new FileWriter(file)) {
             write(tasks, writer);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
 
     }
 
     public static void readText(AbstractTaskList tasks, File file) {
-
         try (FileReader reader = new FileReader(file)) {
             read(tasks, reader);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
 
     }

@@ -1,11 +1,16 @@
 package ua.edu.sumdu.j2se.savchenko.tasks.model;
 
 
+import org.apache.log4j.Logger;
+
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.stream.Stream;
 
 public abstract class AbstractTaskList implements Iterable<Task>, Cloneable, Serializable {
+    private static final Logger logger = Logger.getLogger(AbstractTaskList.class);
+
+
     protected int size;
 
     public abstract void add(Task task);
@@ -27,7 +32,7 @@ public abstract class AbstractTaskList implements Iterable<Task>, Cloneable, Ser
         try {
             cloneList = this.getClass().newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
         for (Task task : this) {
             Task cloneTask = task.clone();

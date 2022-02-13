@@ -1,5 +1,6 @@
 package ua.edu.sumdu.j2se.savchenko.tasks.view;
 
+import org.apache.log4j.Logger;
 import ua.edu.sumdu.j2se.savchenko.tasks.controller.ActionListener;
 import ua.edu.sumdu.j2se.savchenko.tasks.model.AbstractTaskList;
 import ua.edu.sumdu.j2se.savchenko.tasks.model.Task;
@@ -17,6 +18,9 @@ public class TaskListView implements View {
     private int interval;
     private boolean active;
     private int index;
+
+    private static final Logger logger = Logger.getLogger(TaskListView.class);
+
 
     public void setFieldsValue() {
         setTitle();
@@ -161,7 +165,7 @@ public class TaskListView implements View {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
 
     }
@@ -177,7 +181,7 @@ public class TaskListView implements View {
         try {
             actionListener.actionPerformed(action);
         } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
     }
 

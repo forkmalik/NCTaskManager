@@ -1,5 +1,7 @@
 package ua.edu.sumdu.j2se.savchenko.tasks.model;
 
+import org.apache.log4j.Logger;
+
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -7,6 +9,9 @@ import java.util.Set;
 import java.util.SortedMap;
 
 public class TaskModel {
+
+    private static final Logger logger = Logger.getLogger(TaskModel.class);
+
 
     private LinkedTaskList taskList = new LinkedTaskList();
 
@@ -89,7 +94,7 @@ public class TaskModel {
         try {
             file.createNewFile();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
         return file;
     }
