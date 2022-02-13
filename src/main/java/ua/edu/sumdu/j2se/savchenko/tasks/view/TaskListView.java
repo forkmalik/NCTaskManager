@@ -44,12 +44,14 @@ public class TaskListView implements View {
         Scanner scanner = new Scanner(System.in);
         printMessage("Enter task title...");
 
-        if(scanner.nextLine().equals("")) {
+        String title = scanner.nextLine();
+
+        if(title.equals("")) {
             printMessage("The task title should not be blank ");
             setTitle();
         }
 
-        this.title = scanner.nextLine();
+        this.title = title;
     }
 
     public void setTime() {
