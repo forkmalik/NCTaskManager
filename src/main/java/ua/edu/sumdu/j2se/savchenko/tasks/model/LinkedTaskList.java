@@ -1,7 +1,6 @@
 package ua.edu.sumdu.j2se.savchenko.tasks.model;
 
 import java.util.Arrays;
-import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.stream.Stream;
@@ -38,7 +37,9 @@ public class LinkedTaskList extends AbstractTaskList {
             }
             size++;
         } else {
-            throw new NullPointerException("Task must not be null");
+            System.out.println("Task must not be null");
+            Exception e = new NullPointerException();
+            logger.fatal(e.getMessage(), e);
         }
 
     }
@@ -68,7 +69,9 @@ public class LinkedTaskList extends AbstractTaskList {
     @Override
     public Task getTask(int index) {
         if(index > size){
-            throw new IndexOutOfBoundsException("Index must be less or equal to elements amount");
+            Exception e = new IndexOutOfBoundsException("Index must be less or equal to elements amount");
+            System.out.println("The index must be less than or equal to the number of items");
+            logger.warn(e.getMessage(), e);
         }
         if(index == 0) {
             return head.task;
@@ -104,14 +107,18 @@ public class LinkedTaskList extends AbstractTaskList {
                     index = i + 1;
                     return next;
                 } catch (IndexOutOfBoundsException e) {
-                    throw new NoSuchElementException();
+                    System.out.println("The index must be less than or equal to the number of items");
+                    logger.warn(e.getMessage(), e);
                 }
+                return null;
             }
 
             @Override
             public void remove() {
                 if(previousLoc < 0) {
-                    throw new IllegalStateException("Can't remove!");
+                    System.out.println("Nothing to remove");
+                    Exception e = new IllegalStateException();
+                    logger.warn(e.getMessage(), e);
                 }
 
                 try {
@@ -120,7 +127,8 @@ public class LinkedTaskList extends AbstractTaskList {
                         index--;
                     previousLoc = -1;
                 } catch (IndexOutOfBoundsException e) {
-                    throw new ConcurrentModificationException();
+                    System.out.println("The index must be less than or equal to the number of items");
+                    logger.warn(e.getMessage(), e);
                 }
             }
 

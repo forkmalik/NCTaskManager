@@ -46,6 +46,7 @@ public class TaskController extends AbstractController {
         }
 
         taskModel.addTask(task);
+        logger.info("Task added");
         listView.clearAllFields();
         printList();
         listView.setAction(new TaskActionListener());
@@ -63,6 +64,7 @@ public class TaskController extends AbstractController {
         boolean deleted = taskModel.removeTask(taskToDeleteIndex);
         if (deleted) {
             listView.printMessage("Removed!");
+            logger.info("Task removed");
         }
         listView.clearAllFields();
         printList();
@@ -161,6 +163,7 @@ public class TaskController extends AbstractController {
         File fileToWrite = new File("taskList.json");
         if (!fileToWrite.exists()) {
             fileToWrite = taskModel.createFile();
+            logger.info("File created");
         }
         TaskIO.writeText(taskModel.getTaskList(), fileToWrite);
     }
@@ -169,6 +172,7 @@ public class TaskController extends AbstractController {
         File fileToRead = new File("taskList.json");
         if (!fileToRead.exists()) {
             taskModel.createFile();
+            logger.info("File created");
         }
 
         if(fileToRead.length() == 0) {
@@ -180,6 +184,7 @@ public class TaskController extends AbstractController {
 
     private void finishWork() {
         writeTaskList();
+        logger.info("Finish work");
         System.exit(0);
     }
 

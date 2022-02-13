@@ -22,8 +22,9 @@ public class ArrayTaskList extends AbstractTaskList {
             list[size] = task;
             size++;
         } else {
+            System.out.println("Task must not be null");
             Exception e = new NullPointerException();
-            logger.error(e.getMessage(), e);
+            logger.fatal(e.getMessage(), e);
         }
 
     }
@@ -61,7 +62,9 @@ public class ArrayTaskList extends AbstractTaskList {
     @Override
     public Task getTask(int index) {
         if(index > list.length){
-            throw new IndexOutOfBoundsException("Index must be less or equal to elements amount");
+            System.out.println("The index must be less than or equal to the number of items");
+            Exception e = new IndexOutOfBoundsException();
+            logger.warn(e.getMessage(), e);
         }
         return list[index];
     }
@@ -87,14 +90,18 @@ public class ArrayTaskList extends AbstractTaskList {
                     index = i + 1;
                     return next;
                 } catch (IndexOutOfBoundsException e) {
-                    throw new NoSuchElementException();
+                    System.out.println("The index must be less than or equal to the number of items");
+                    logger.warn(e.getMessage(), e);
                 }
+                return null;
             }
 
             @Override
             public void remove() {
                 if(previousLoc < 0) {
-                    throw new IllegalStateException("Can't remove!");
+                    System.out.println("Nothing to remove");
+                    Exception e = new IllegalStateException();
+                    logger.warn(e.getMessage(), e);
                 }
 
                 try {
@@ -103,7 +110,8 @@ public class ArrayTaskList extends AbstractTaskList {
                         index--;
                     previousLoc = -1;
                 } catch (IndexOutOfBoundsException e) {
-                    throw new ConcurrentModificationException();
+                    System.out.println("The index must be less than or equal to the number of items");
+                    logger.warn(e.getMessage(), e);
                 }
             }
         };

@@ -82,10 +82,10 @@ public class TaskListView implements View {
 
         LocalDateTimeParser parser = new LocalDateTimeParser();
 
-        printMessage("Enter task start date...");
+        printMessage("Enter task start date (dd.MM.yyyy)...");
         String dateString = scanner.nextLine();
 
-        printMessage("Enter task start time...");
+        printMessage("Enter task start time (HH:mm)...");
         String timeString = scanner.nextLine();
         LocalDateTime timeToSet = parser.parseString(dateString, timeString);
         if(timeToSet != null) {
@@ -100,10 +100,10 @@ public class TaskListView implements View {
 
         LocalDateTimeParser parser = new LocalDateTimeParser();
 
-        printMessage("Enter task end date...");
+        printMessage("Enter task end date (dd.MM.yyyy)...");
         String dateString = scanner.nextLine();
 
-        printMessage("Enter task end time...");
+        printMessage("Enter task end time (HH:mm)...");
         String timeString = scanner.nextLine();
 
         LocalDateTime timeToSet = parser.parseString(dateString, timeString);

@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.stream.Stream;
 
 public abstract class AbstractTaskList implements Iterable<Task>, Cloneable, Serializable {
-    private static final Logger logger = Logger.getLogger(AbstractTaskList.class);
+    protected static final Logger logger = Logger.getLogger(AbstractTaskList.class);
 
 
     protected int size;
